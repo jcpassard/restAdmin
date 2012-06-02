@@ -1,0 +1,29 @@
+package webadmin;
+use Dancer ':syntax';
+
+use Data::Dumper;
+
+#use Log::Models::Log;
+
+our $VERSION = '0.1';
+
+#before_template sub {
+#   my $tokens = shift;
+
+#   $tokens->{'css_url'} = request->base . 'css/style.css';
+#};
+
+get '/' => sub {
+
+     #if ( not session('logged_in') ) {
+     #          return redirect '/login';
+     #  }
+    #template 'index-tabs.phtml', { title => 'Vo2 Rest Interface'};
+    return undef;
+};
+
+get '/vhName' => sub {
+    return setting('vhName');
+};
+
+true;
