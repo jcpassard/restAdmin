@@ -7,6 +7,9 @@ appname: "webadmin"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
+
+views: "/home/system/apache/restAdmin/lib/Modules/WebInterface/Views"
+
 layout: "main.phtml"
 
 # when the charset is set to UTF-8 Dancer will handle for you

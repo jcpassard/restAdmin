@@ -43,16 +43,18 @@ sub init
 
     $self->SUPER::init();
 
-    $_sb->notify({
-        type => 'log-register',
-        data => {
-            logName   => $eventTemplate->{logName},
-            schema    => $eventTemplate->{event}
-        }
-    });
-
     $self->{controller} = Vh::Controllers::Vh->new({ module => $self });
     $self->{controller}->initController();
+
+    $_sb->addListeners({
+        'vh-listdomains'  => sub {
+            my $msg = shift;
+            my $cb = $msg->{callback};
+
+            my $domains = $self->{controller}->listDomains();
+            &$cb($domains);
+        },
+    });
 
 }
 

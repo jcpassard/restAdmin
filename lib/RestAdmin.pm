@@ -7,7 +7,8 @@ our $VERSION = '0.1';
 
 
 get '/' => sub {
-    return { location => 'Homepage' };
+    template 'index.phtml', { title => 'Vo2 Rest Interface'};
+    #return { location => 'Homepage' };
 };
 
 get '/vhName' => sub {

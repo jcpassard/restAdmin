@@ -183,7 +183,7 @@ sub triggerEvent
     foreach my $module ( keys %$modules ) {
         if ( my $events = $self->_getModuleEvents($module) ) {
             if ( my $cb = $events->{$event->{type}} ) {
-                &$cb($event->{data});
+                &$cb($event->{msg});
             }
         }
     }

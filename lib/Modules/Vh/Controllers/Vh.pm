@@ -42,6 +42,8 @@ sub _testGroup
     my $self = shift;
     my $group = shift;
 
+return 1;
+
     my $role = session('role');
 
     return unless $role->{prefixes};
@@ -49,7 +51,6 @@ sub _testGroup
     my $groups = "$role->{prefixes},";
     $group .= ',';
     return ( $groups eq 'all,' || $groups =~ m/${group}/ );
-
 }
 
 sub _getGroup
@@ -138,12 +139,12 @@ sub initController
 {
     my $self = shift;
 
-    get '/vh/vms' => sub { $self->setSession(); return $self->listDomains() };
-    get '/vh/:vmName' => sub {
+    get '/rest/vh/vms' => sub { $self->setSession(); return $self->listDomains() };
+    get '/rest/vh/:vmName' => sub {
         $self->setSession();
         return $self->vmInfos(params->{vmName})
     };
-    post '/vh/:vmName' => sub { $self->setSession(); $self->startStopVM(@_); };
+    post '/rest/vh/:vmName' => sub { $self->setSession(); $self->startStopVM(@_); };
 }
 
 1;
