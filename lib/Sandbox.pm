@@ -93,41 +93,4 @@ sub notify
     $self->CORE()->triggerEvent($event);
 }
 
-sub storageRegister
-{
-    my $self = shift;
-    $self->CORE()->storageRegister(@_);
-}
-
-sub storageInsert
-{
-    my $self = shift;
-    $self->CORE()->storageInsert(@_);
-}
-
-sub storageDelete
-{
-    my $self = shift;
-    $self->CORE()->storageDelete(@_);
-}
-
-sub storageUpdate
-{
-    my $self = shift;
-    $self->CORE()->storageUpdate(@_);
-}
-
-
-sub storageInsertUnless
-{
-    my $self = shift;
-    $self->CORE()->storageInsertUnless(@_);
-}
-
-sub storageSearch
-{
-    my $self = shift;
-    $self->CORE()->storageSearch(@_);
-}
-
 1;

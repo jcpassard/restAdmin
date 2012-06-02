@@ -7,7 +7,6 @@ use lib qw(lib /home/system/apache/Rex/lib lib/Modules);
 
 use Dancer ':syntax';
 use Sandbox;
-use Core::Storage::Module;
 
 use Data::Dumper;
 
@@ -52,8 +51,6 @@ sub new
     my $self = {};
 
     bless($self, $class);
-
-    $self->{storage} = Core::Storage::Module->new({database => setting 'database'});
 
     return $self;
 }
@@ -190,48 +187,6 @@ sub triggerEvent
             }
         }
     }
-}
-
-sub _getStorage
-{
-    my $self = shift;
-    return $self->{storage};
-}
-
-sub storageRegister
-{
-    my $self = shift;
-    $self->_getStorage()->register(@_);
-}
-
-sub storageInsert
-{
-    my $self = shift;
-    $self->_getStorage()->insert(@_);
-}
-
-sub storageDelete
-{
-    my $self = shift;
-    $self->_getStorage()->delete(@_);
-}
-
-sub storageUpdate
-{
-    my $self = shift;
-    $self->_getStorage()->update(@_);
-}
-
-sub storageInsertUnless
-{
-    my $self = shift;
-    $self->_getStorage()->insertUnless(@_);
-}
-
-sub storageSearch
-{
-    my $self = shift;
-    $self->_getStorage()->search(@_);
 }
 
 1;
