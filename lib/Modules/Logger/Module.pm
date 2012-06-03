@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-package Vh::Module;
+package Logger::Module;
 
 use strict;
 use warnings;
@@ -8,9 +8,6 @@ use warnings;
 use base 'Module';
 
 use Dancer(':syntax');
-
-use Vh::Controllers::Vh;
-
 use Data::Dumper;
 
 my $_instance;
@@ -36,29 +33,31 @@ sub init
 
     $self->SUPER::init();
 
-    $self->{controller} = Vh::Controllers::Vh->new({ module => $self });
-    $self->{controller}->initController();
-
     $_sb->addListeners({
-        'vh-listdomains'  => sub {
+        'logger-add'  => sub {
+            my $source = shift;
             my $msg = shift;
-            my $cb = $msg->{callback};
+print STDERR "$source $msg";
+            $self->writeLog($source, $msg);
 
-            my $domains = $self->{controller}->listDomains();
-            &$cb($domains);
         },
     });
 
 }
 
-sub newEvent
+sub writeLog
 {
-    my $self  = shift;
-    my ($vm, $crit, $action, $result, $text) = @_;
+    my $self = shift;
+    my $source = shift;
+    my $log = shift;
 
-    my $username = session('username');
-    my $msg = "$username $vm $crit $action $result $text";
+    my $time = localtime();
+    my $logFile = setting('logPath') . "/$source.log";
+    my $LOG;
 
-    $self->SUPER::logEvent($msg);
+    open($LOG, '>>', $logFile) || die "can't open $logFile: $!";;
+    print $LOG "$time $source $log\n";
+    close($LOG);
 }
+
 1;

@@ -3,11 +3,12 @@
 # all the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
-appname: "webadmin"
+appname: "restAdmin"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
 
+public: "/home/system/apache/restAdmin/lib/Modules/WebInterface/public"
 views: "/home/system/apache/restAdmin/lib/Modules/WebInterface/Views"
 
 layout: "main.phtml"
@@ -35,4 +36,14 @@ serializer: "JSON"
 #session: "Simple"
 session: YAML
 
-database: "userdb"
+
+# From this point, parameters are specific to restAdmin
+
+modules: "/home/system/apache/restAdmin/lib/Modules"
+
+
+
+# Modules Configuration
+
+# Logger
+logPath: "/home/system/apache/restAdmin/lib/Modules/Logger/log"

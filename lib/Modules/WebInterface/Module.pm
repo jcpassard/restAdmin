@@ -11,19 +11,21 @@ use Data::Dumper;
 
 use WebInterface::Controllers::WebInterface;
 
-my $_sb = undef;
-
-my $eventTemplate = {};
+my $_instance;
+my $_sb;
 
 sub new
 {
-    my $proto  = shift;
-    my $params = shift;
+    unless ( $_instance ) {
+        my $proto  = shift;
+        my $params = shift;
 
-    my $class = ref($proto) || $proto;
-    my $self = $class->SUPER::new($params);
-    $_sb = $self->getSandbox();
-    return $self;
+        my $class = ref($proto) || $proto;
+
+        $_instance = $class->SUPER::new($params);
+        $_sb = $_instance->SUPER::getSandbox();
+    }
+    return $_instance;
 }
 
 sub init

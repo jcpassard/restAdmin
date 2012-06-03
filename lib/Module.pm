@@ -3,14 +3,8 @@ package Module;
 
 use strict;
 use warnings;
-use Dancer ':syntax';
 
 use Data::Dumper;
-
-
-
-our $_sb = undef;
-our $eventTemplate = {};
 
 sub new
 {
@@ -21,14 +15,12 @@ sub new
     my $self = {};
 
     return undef unless (
-            $params->{sandbox} &&
-            ref($params->{sandbox}) eq 'Sandbox'
+        $params->{sandbox} &&
+        ref($params->{sandbox}) eq 'Sandbox'
     );
 
-    $_sb = $params->{sandbox};
-    bless($self, $class);
-
-    return $self;
+    $self->{_sb} = $params->{sandbox};
+    return bless($self, $class);
 }
 
 sub install
@@ -45,17 +37,21 @@ sub init
 sub getSandbox
 {
     my $self = shift;
-    return $_sb;
+    return $self->{_sb};
 }
 
-sub sendEvent
+sub logEvent
 {
     my $self  = shift;
     my $event = shift;
 
-    $_sb->notify({
-        type => 'log-add-event',
-        data => $event,
+    my ($source, undef) = caller();
+    $source =~ s/^([^:]*)::.*$/$1/;
+
+    $self->getSandbox()->notify({
+        type   => 'logger-add',
+        source => $source,
+        msg => $event,
     });
 }
 1;

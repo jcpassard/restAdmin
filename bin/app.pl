@@ -9,15 +9,26 @@ use RestAdmin;
 
 our $CORE = Core->new();
 
-$CORE->registerModule('Vh::Module');
-$CORE->registerModule('WebInterface::Module');
-$CORE->installModule('Vh::Module');
-$CORE->installModule('WebInterface::Module');
-$CORE->initModule('Vh::Module');
-$CORE->initModule('WebInterface::Module');
+$CORE->registerModule("Logger::Module");
+$CORE->installModule("Logger::Module");
+$CORE->initModule("Logger::Module");
 
+my $modulesPath = setting('modules');
+opendir(my $DIR, $modulesPath) || die "can't opendir $modulesPath: $!";
 
-print Dancer::App->current->setting('views'), "\n";
+my @modules = grep { /^[^.]/ &&
+    $_ ne 'Logging' &&
+    -d "$modulesPath/$_" &&
+    -f "$modulesPath/$_/Module.pm"
+} readdir($DIR);
+
+foreach my $module ( @modules ) {
+    $CORE->registerModule("${module}::Module");
+    $CORE->installModule("${module}::Module");
+    $CORE->initModule("${module}::Module");
+}
+
+#print Dancer::App->current->setting('views'), "\n";
 
 print "CORE : ", Dumper $CORE->_getModules();
 

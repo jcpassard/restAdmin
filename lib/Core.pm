@@ -82,6 +82,11 @@ sub registerModule
                 instance => $newModule,
                 events   => {}
             };
+            $self->triggerEvent({
+                type => 'logger-add',
+                source => 'Core',
+                msg => "$module registered"
+            });
             return 1;
         }
     }
@@ -138,6 +143,11 @@ sub initModule
 
     if ( my $instance = $self->_getModuleInstance($module) ) {
         $instance->init();
+        $self->triggerEvent({
+            type => 'logger-add',
+            source => 'Core',
+            msg => "$module initialized"
+        });
         return 1;
     }
     return undef;
@@ -150,6 +160,11 @@ sub installModule
 
     if ( my $instance = $self->_getModuleInstance($module) ) {
         $instance->install();
+        $self->triggerEvent({
+            type => 'logger-add',
+            source => 'Core',
+            msg => "$module installed"
+        });
         return 1;
     }
     return undef;
@@ -183,7 +198,7 @@ sub triggerEvent
     foreach my $module ( keys %$modules ) {
         if ( my $events = $self->_getModuleEvents($module) ) {
             if ( my $cb = $events->{$event->{type}} ) {
-                &$cb($event->{msg});
+                &$cb($event->{source}, $event->{msg});
             }
         }
     }
