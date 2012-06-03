@@ -37,7 +37,6 @@ sub init
         'logger-add'  => sub {
             my $source = shift;
             my $msg = shift;
-print STDERR "$source $msg";
             $self->writeLog($source, $msg);
 
         },

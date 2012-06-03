@@ -3,8 +3,6 @@ package Core;
 use strict;
 use warnings;
 
-use lib qw(lib /home/system/apache/Rex/lib lib/Modules);
-
 use Dancer ':syntax';
 use Sandbox;
 
@@ -72,7 +70,14 @@ sub registerModule
         require $modPath.'.pm';
         1;
     };
-    print "Loading $module failed $@ \n" if $@;
+
+    if ( $@ ) {
+        $self->triggerEvent({
+                type => 'logger-add',
+                source => 'Core',
+                msg => "Loading $module failed $@"
+            });
+    }
     my $sandbox = Sandbox->new( { CORE => $self, module => $module } );
 
     if ( ! $self->_isRegistered($module) ) {

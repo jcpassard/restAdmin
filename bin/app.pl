@@ -1,4 +1,7 @@
 #! /usr/bin/perl
+
+use lib qw(lib /home/system/apache/Rex/lib lib/Modules);
+
 use Dancer;
 use Core;
 
