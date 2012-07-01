@@ -5,7 +5,6 @@ use Data::Dumper;
 
 our $VERSION = '0.1';
 
-
 get '/' => sub {
     template 'index.phtml', { title => 'Vo2 Rest Interface'};
     #return { location => 'Homepage' };

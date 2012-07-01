@@ -1,0 +1,25 @@
+
+    ID : <% info.id %><br />
+    Nom : <% info.name %><br />
+    Nom court : <% info.short %><br />
+    Groupe : <% info.group %><br />
+
+    <br />
+    <% infos = info.details.infos %>
+    CPU : <% infos.cpu %><br />
+    Memory : <% infos.usedMemory %><br />
+    Status : <% IF infos.state == 'running' %> Démarrée <% ELSE %> Arrêtée <% END %><br />
+
+    <% IF infos.state == 'running' %>
+        <button id="btn-stop-vm"
+                vm-name="<% info.name %>"
+                ajax-param-action="stop"
+                ajax-url="/rest/vh/<% info.name %>"
+                ajax-method="post" >Arrêt</button>
+    <% ELSE %>
+        <button id="btn-start-vm"
+                vm-name="<% info.name %>"
+                ajax-param-action="start"
+                ajax-url="/rest/vh/<% info.name %>"
+                ajax-method="post" >Démarrage</button>
+    <% END %>

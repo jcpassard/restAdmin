@@ -1,0 +1,9 @@
+<ul id="list">
+    <% FOREACH vm IN list %>
+    <li vh-vmName ="<% vm.short %>">
+        <a href="/interface/html/vh/<% vm.name %>">
+            <% vm.short %>
+        </a>
+    </li>
+    <% END %>
+</ul>

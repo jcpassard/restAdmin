@@ -41,11 +41,24 @@ sub init
 
     $_sb->addListeners({
         'vh-listdomains'  => sub {
+            my $source = shift;
             my $msg = shift;
+
             my $cb = $msg->{callback};
 
-            my $domains = $self->{controller}->listDomains();
+            my $domains = $self->{controller}->listDomains($msg->{group} || undef);
             &$cb($domains);
+        },
+        'vh-vminfos'  => sub {
+            my $source = shift;
+            my $msg = shift;
+
+            my $cb = $msg->{callback};
+
+            my $vmInfos = $self->{controller}->vmInfos(
+                $msg->{group} || undef,
+                $msg->{vmName});
+            &$cb($vmInfos);
         },
     });
 
@@ -56,8 +69,7 @@ sub newEvent
     my $self  = shift;
     my ($vm, $crit, $action, $result, $text) = @_;
 
-    my $username = session('username');
-    my $msg = "$username $vm $crit $action $result $text";
+    my $msg = "$vm $crit $action $result $text";
 
     $self->SUPER::logEvent($msg);
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-package Vh::Models::RexLibvirt;
+package Vh::Models::Libvirt;
 
 use strict;
 use warnings;
@@ -15,7 +15,7 @@ Rex::Config->set(virtualization => "LibVirt");
 
 =head1 NAME
 
-Model::RexLibvirt
+Model::Libvirt
 
 =head1 DESCRIPTION
 
@@ -57,9 +57,9 @@ sub detailsVM
     my $prefixes = shift;
 
     my $details = {
-        infos      => Vh::Models::RexLibvirt::getInfosVM($vmName),
-        devices    => Vh::Models::RexLibvirt::getDisks($vmName),
-        interfaces => Vh::Models::RexLibvirt::getInterfaces($vmName),
+        infos      => Vh::Models::Libvirt::getInfosVM($vmName),
+        devices    => Vh::Models::Libvirt::getDisks($vmName),
+        interfaces => Vh::Models::Libvirt::getInterfaces($vmName),
         #display    => Vh::Models::RexLibvirt::getDisplay($vmName),
     };
 

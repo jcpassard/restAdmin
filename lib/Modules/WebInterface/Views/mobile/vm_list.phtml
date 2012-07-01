@@ -1,0 +1,8 @@
+<ul id="list">
+    <% FOREACH vm IN data %>
+    <li vh-vmName ="<% vm.short %>">
+        <a href="#"
+           data-role="button"><% vm.short %></a>
+    </li>
+    <% END %>
+</ul>

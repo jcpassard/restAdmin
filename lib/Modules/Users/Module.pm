@@ -39,6 +39,19 @@ sub init
     $self->{controller} = Users::Controllers::Users->new({ module => $self });
     $self->{controller}->initController();
 
+    $_sb->addListeners({
+        'check-access'  => sub {
+            my $source = shift;
+            my $msg = shift;
+
+            my $cb = $msg->{callback};
+
+            #my $domains = $self->{controller}->listDomains($msg->{group} || undef);
+            &$cb(1);
+        },
+    });
 }
+
+
 
 1;

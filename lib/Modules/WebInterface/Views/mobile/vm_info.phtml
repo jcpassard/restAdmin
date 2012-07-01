@@ -1,0 +1,23 @@
+
+    ID : <% data.id %><br />
+    Nom : <% data.name %><br />
+    Nom court : <% data.short %><br />
+    Groupe : <% data.group %><br />
+
+    <br />
+    <% infos = data.details.infos %>
+    CPU : <% infos.cpu %><br />
+    Memory : <% infos.usedMemory %><br />
+    Status : <% IF infos.state == 'running' %> Démarrée <% ELSE %> Arrêtée <% END %><br />
+
+    <% IF infos.state == 'running' %>
+        <button id="btn-stop-vm"
+                ajax-param-action="stop"
+                ajax-url="/rest/vh/<% data.name %>"
+                ajax-method="post" >Arrêt</button>
+    <% ELSE %>
+        <button id="btn-start-vm"
+                ajax-param-action="start"
+                ajax-url="/rest/vh/<% data.name %>"
+                ajax-method="post" >Démarrage</button>
+    <% END %>

@@ -1,7 +1,10 @@
 package Vh::Controllers::Vh;
 use Dancer ':syntax';
 
-use Vh::Models::RexLibvirt;
+use strict;
+use warnings;
+
+use Vh::Models::Libvirt;
 
 use Data::Dumper;
 
@@ -24,7 +27,6 @@ sub new
                          );
     $_module = $params->{module};
     $_sb     = $_module->getSandbox();
-    #$_model  = Users::Models::Users->new ({module => $_module});
 
     bless($self, $class);
 
@@ -35,22 +37,6 @@ sub getSandbox
 {
     my $self = shift;
     return $_sb;
-}
-
-sub _testGroup
-{
-    my $self = shift;
-    my $group = shift;
-
-return 1;
-
-    my $role = session('role');
-
-    return unless $role->{prefixes};
-
-    my $groups = "$role->{prefixes},";
-    $group .= ',';
-    return ( $groups eq 'all,' || $groups =~ m/${group}/ );
 }
 
 sub _getGroup
@@ -66,19 +52,39 @@ sub _getGroup
     }
 
     return $group, $short;
+}
 
+sub _checkAccess
+{
+    my $self = shift;
+    my $resource = shift;
+
+    my $access = 0;
+    $_sb->notify({
+        type => 'check-access',
+        source => $self,
+        msg  => {
+            resource => $resource,
+            callback => sub {
+                $access = shift;
+            }
+        }
+    });
+    return $access;
 }
 
 sub listDomains
 {
     my $self = shift;
-    my $vms = Vh::Models::RexLibvirt::listDomains();
+    my $group = shift;
+
+    my $vms = Vh::Models::Libvirt::listDomains();
 
     my $ret = [];
 
     foreach my $vm ( @$vms ) {
         my $infos = $self->vmInfos($vm->{name});
-        push @$ret, $infos;
+        push @$ret, $infos if ( $infos );
     }
     return $ret;
 };
@@ -90,61 +96,54 @@ sub vmInfos
 
     my $vm = {};
     ($vm->{group}, $vm->{short}) = $self->_getGroup($vmName);
-    if ( $self->_testGroup($vm->{group}) ) {
-        $vm->{details} = Vh::Models::RexLibvirt::detailsVM($vmName);
-        $vm->{id} = $vm->{details}{infos}{id};
-        $vm->{name} = $vm->{details}{infos}{name};
-    }
+    return unless $self->_checkAccess($vm->{group});
+    $vm->{details} = Vh::Models::Libvirt::detailsVM($vmName);
+    $vm->{id} = $vm->{details}{infos}{id};
+    $vm->{name} = $vm->{details}{infos}{name};
+
     return $vm
 };
-
 
 sub startStopVM
 {
     my $self = shift;
-    my $vmName = params->{vmName};
-    my $action = params->{action};
+    my $action = shift;
+    my $vmName = shift;
 
+    my $vm = {};
+    ($vm->{group}, $vm->{short}) = $self->_getGroup($vmName);
+    return unless $self->_checkAccess($vm->{group});
     if ( $action eq 'start' ) {
         $_module->newEvent($vmName, 0, $action, 'prepare to start', '');
-        Vh::Models::RexLibvirt::startVM($vmName);
+        Vh::Models::Libvirt::startVM($vmName);
         $_module->newEvent($vmName, 0, $action, 'started', '');
     }
 
-    if ($action eq 'stop' ) {
+    if ( $action eq 'stop' ) {
         $_module->newEvent($vmName, 0, $action, 'prepare to halt', '');
-        Vh::Models::RexLibvirt::destroyVM($vmName);
+        Vh::Models::Libvirt::destroyVM($vmName);
         $_module->newEvent($vmName, 0, $action, 'stopped', '');
     }
 
     return ;
 };
 
-sub setSession
-{
-    my $username = 'admin';
-    my $password = 'pass1';
-
-    session 'logged_in' => true;
-    session 'username' => $username;
-    session 'role' => {
-        role     => 'admin',
-        entity   => '',
-        prefixes => 'all',
-        vlan     => '',
-    };
-}
-
 sub initController
 {
     my $self = shift;
 
-    get '/rest/vh/vms' => sub { $self->setSession(); return $self->listDomains() };
-    get '/rest/vh/:vmName' => sub {
-        $self->setSession();
-        return $self->vmInfos(params->{vmName})
+    get '/rest/vh/vms' => sub {
+        return $self->listDomains()
     };
-    post '/rest/vh/:vmName' => sub { $self->setSession(); $self->startStopVM(@_); };
+    get '/rest/vh/:vmName' => sub {
+        return $self->vmInfos(params->{vmName});
+    };
+    post '/rest/vh/:vmName' => sub {
+        $self->startStopVM(
+            params->{action},
+            params->{vmName}
+        );
+    };
 }
 
 1;
