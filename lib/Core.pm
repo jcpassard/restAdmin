@@ -72,6 +72,7 @@ sub registerModule
     };
 
     if ( $@ ) {
+print STDERR $@;
         $self->triggerEvent({
                 type => 'logger-add',
                 source => 'Core',
