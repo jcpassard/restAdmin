@@ -3,6 +3,9 @@ package Core;
 use strict;
 use warnings;
 
+use MongoDB;
+use MongoDB::OID;
+
 use Dancer ':syntax';
 use Sandbox;
 
@@ -33,6 +36,7 @@ it under the same terms as Perl itself.
 =cut
 
 my $modules = {};
+my $_mongo = undef;
 
 =head2 new
 
@@ -208,6 +212,14 @@ sub triggerEvent
             }
         }
     }
+}
+
+sub getMongoDB
+{
+    if ( ! $_mongo ) {
+        $_mongo = MongoDB::Connection->new();
+    }
+    return $_mongo;
 }
 
 1;

@@ -72,11 +72,17 @@ sub initController
         if ( $list ) {
             my $mailboxes = $self->list($path);
             foreach my $mailbox ( @$mailboxes ) {
-               push @$result, { $mailbox => $self->size("$path/$mailbox") };
+                push @$result, { 
+                    mailbox => $mailbox,
+                    size => $self->size("$path/$mailbox") 
+                };
             }
         } else {
             my $size = $self->size("$path");
-            push @$result, { $path => defined($size) ? $size : "Not a mailbox" };
+            push @$result, { 
+                mailbox => $path, 
+                size => defined($size) ? $size : "Not a mailbox" 
+            };
         }
         return $result;
     };
